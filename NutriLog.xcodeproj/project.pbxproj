@@ -16,11 +16,6 @@
 			path = NutriLog;
 			sourceTree = "<group>";
 		};
-		917FFD1B2EBD00D8000E0E2C /* Progress */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Progress;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +32,6 @@
 		8C9599982E99E9660096FF26 = {
 			isa = PBXGroup;
 			children = (
-				917FFD1B2EBD00D8000E0E2C /* Progress */,
 				8C9599A32E99E9660096FF26 /* NutriLog */,
 				8C9599A22E99E9660096FF26 /* Products */,
 			);
@@ -68,7 +62,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				8C9599A32E99E9660096FF26 /* NutriLog */,
-				917FFD1B2EBD00D8000E0E2C /* Progress */,
 			);
 			name = NutriLog;
 			packageProductDependencies = (

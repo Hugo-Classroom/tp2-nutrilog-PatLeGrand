@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DailySummaryView: View {
-    @State var reminingCalorieProgress: Double = 1
+    @State var reminingCalorieProgress: Double = 0.5
     
     var body: some View {
         NavigationView{
