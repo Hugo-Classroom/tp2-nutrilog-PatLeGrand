@@ -16,7 +16,7 @@ struct MacrosSection: View {
                 .foregroundColor(.gray)
             
             HStack(spacing: 35) {
-                // Protéines
+                
                 MacroCard(
                     icon: "circle.fill",
                     color: .red,

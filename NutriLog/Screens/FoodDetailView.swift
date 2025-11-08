@@ -1,16 +1,16 @@
 import SwiftUI
+import SwiftData
 
 struct FoodDetailView: View {
     @Environment(\.dismiss) var dismiss
+    @Query(sort: \FoodEntry.date, order: .reverse) private var allEntries: [FoodEntry]
     
     let food: Food?
-    let foodEntries = MockData.foodEntries
     
-    // Historique basé sur les repas réels du food sélectionné
     var consumptionHistory: [(mealType: String, date: String, serving: String)] {
         guard let food = food else { return [] }
         
-        let filtered = foodEntries.filter { $0.food?.name == food.name }
+        let filtered = allEntries.filter { $0.food?.name == food.name }
         
         return filtered.map { entry in
             let dateFormatter = DateFormatter()
@@ -23,7 +23,6 @@ struct FoodDetailView: View {
                 serving: String(format: "%.0f g", entry.servingSize)
             )
         }
-        .sorted { $0.date > $1.date }
     }
     
     var body: some View {
@@ -83,7 +82,8 @@ struct FoodDetailView: View {
                         .padding(.top, 12)
                 } else {
                     VStack(spacing: 12) {
-                        ForEach(consumptionHistory, id: \.date) { item in
+                        ForEach(consumptionHistory.indices, id: \.self) { index in
+                            let item = consumptionHistory[index]
                             HStack(spacing: 12) {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(item.mealType)
@@ -130,4 +130,5 @@ struct FoodDetailView: View {
 
 #Preview {
     FoodDetailView(food: MockData.banana)
+        .modelContainer(for: [Food.self, FoodEntry.self], inMemory: true)
 }

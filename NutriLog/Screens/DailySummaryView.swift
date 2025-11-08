@@ -1,18 +1,28 @@
 import SwiftUI
+import SwiftData
 
 struct DailySummaryView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \FoodEntry.date, order: .reverse) private var allEntries: [FoodEntry]
+    
     @State var showAddMealSheet = false
     
-    
-    let foodEntries = MockData.foodEntries
     let dailyCalorieGoal = 2500.0
     let dailyProteinGoal = 150.0
     let dailyCarbsGoal = 125.0
     let dailyFatGoal = 100.0
     
-   
+    var todayEntries: [FoodEntry] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        return allEntries.filter { entry in
+            calendar.isDate(entry.date, inSameDayAs: today)
+        }
+    }
+    
     var totalCaloriesConsumed: Double {
-        foodEntries.reduce(0) { $0 + $1.calories }
+        todayEntries.reduce(0) { $0 + $1.calories }
     }
     
     var remainingCalories: Double {
@@ -20,19 +30,19 @@ struct DailySummaryView: View {
     }
     
     var totalProtein: Double {
-        foodEntries.reduce(0) { $0 + (($1.food?.protein ?? 0) * $1.servingSize / 100) }
+        todayEntries.reduce(0) { $0 + (($1.food?.protein ?? 0) * $1.servingSize / 100) }
     }
     
     var totalCarbs: Double {
-        foodEntries.reduce(0) { $0 + (($1.food?.carbs ?? 0) * $1.servingSize / 100) }
+        todayEntries.reduce(0) { $0 + (($1.food?.carbs ?? 0) * $1.servingSize / 100) }
     }
     
     var totalFat: Double {
-        foodEntries.reduce(0) { $0 + (($1.food?.fat ?? 0) * $1.servingSize / 100) }
+        todayEntries.reduce(0) { $0 + (($1.food?.fat ?? 0) * $1.servingSize / 100) }
     }
     
     var entriesByMealType: [MealType: [FoodEntry]] {
-        Dictionary(grouping: foodEntries, by: { $0.mealType })
+        Dictionary(grouping: todayEntries, by: { $0.mealType })
     }
     
     func mealTypeCalories(_ mealType: MealType) -> Double {
@@ -55,21 +65,18 @@ struct DailySummaryView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     
-                
                     CaloriesSection(
                         totalCaloriesConsumed: totalCaloriesConsumed,
                         remainingCalories: remainingCalories,
                         dailyCalorieGoal: dailyCalorieGoal
                     )
                     
-                 
                     MacrosSection(
                         totalProtein: totalProtein,
                         totalCarbs: totalCarbs,
                         totalFat: totalFat
                     )
                     
-                 
                     ForEach([MealType.breakfast, MealType.lunch, MealType.dinner], id: \.id) { mealType in
                         if let entries = entriesByMealType[mealType], !entries.isEmpty {
                             MealSection(
@@ -102,9 +109,9 @@ struct DailySummaryView: View {
             }
         }
     }
-        
 }
 
 #Preview {
     DailySummaryView()
+        .modelContainer(for: [Food.self, FoodEntry.self], inMemory: true)
 }
