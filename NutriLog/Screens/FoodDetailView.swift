@@ -3,30 +3,41 @@ import SwiftUI
 struct FoodDetailView: View {
     @Environment(\.dismiss) var dismiss
     
-    let foodName = "Banane"
-    let calories = 89.0
-    let protein = 1.0
-    let carbs = 23.0
-    let fat = 0.0
+    let food: Food?
+    let foodEntries = MockData.foodEntries
     
-    let consumptionHistory: [(mealType: String, date: String, serving: String)] = [
-        ("Diner", "8 octobre 2025", "100 g"),
-        ("Déjeuner", "7 octobre 2025", "100 g")
-    ]
+    // Historique basé sur les repas réels du food sélectionné
+    var consumptionHistory: [(mealType: String, date: String, serving: String)] {
+        guard let food = food else { return [] }
+        
+        let filtered = foodEntries.filter { $0.food?.name == food.name }
+        
+        return filtered.map { entry in
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "d MMMM yyyy"
+            dateFormatter.locale = Locale(identifier: "fr_FR")
+            
+            return (
+                mealType: entry.mealType.rawValue,
+                date: dateFormatter.string(from: entry.date),
+                serving: String(format: "%.0f g", entry.servingSize)
+            )
+        }
+        .sorted { $0.date > $1.date }
+    }
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
                 
-                
-                Text(foodName)
+                Text(food?.name ?? "Aliment")
                     .font(.system(size: 39, weight: .bold))
                     .padding(.top, -12)
                     .padding(.bottom, 4)
                 
                 HStack(spacing: 20) {
 
-                    Text(String(format: "%.0f", calories))
+                    Text(String(format: "%.0f", food?.calories ?? 0))
                         .font(.system(size: 32))
                         .foregroundColor(.gray)
                     + Text(" cal")
@@ -36,63 +47,63 @@ struct FoodDetailView: View {
                     Spacer()
                     
                     VStack(alignment: .center) {
-                        Text(String(format: "%.0fg", protein))
+                        Text(String(format: "%.0fg", food?.protein ?? 0))
                             .font(.system(size: 16, weight: .bold))
                         Text("Protéines")
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
                         
-                        
-                        
                     VStack(alignment: .center) {
-                        Text(String(format: "%.0fg", carbs))
+                        Text(String(format: "%.0fg", food?.carbs ?? 0))
                             .font(.system(size: 16, weight: .bold))
                         Text("Glucides")
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
                         
-                        
-                        
                     VStack(alignment: .center) {
-                        Text(String(format: "%.0fg", fat))
+                        Text(String(format: "%.0fg", food?.fat ?? 0))
                             .font(.system(size: 16, weight: .bold))
                         Text("Lipides")
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
-                    
-                    
                 }
                 .padding(.bottom, 10)
-                
                 
                 Text("Historique de consommation")
                     .font(.system(size: 16, weight: .semibold))
                     .padding(.top, 16)
                 
-                VStack(spacing: 12) {
-                    ForEach(consumptionHistory, id: \.date) { item in
-                        HStack(spacing: 12) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(item.mealType)
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.primary)
+                if consumptionHistory.isEmpty {
+                    Text("Aucun repas enregistré")
+                        .font(.system(size: 14, weight: .regular))
+                        .foregroundColor(.gray)
+                        .padding(.top, 12)
+                } else {
+                    VStack(spacing: 12) {
+                        ForEach(consumptionHistory, id: \.date) { item in
+                            HStack(spacing: 12) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(item.mealType)
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.primary)
+                                    
+                                    Text(item.date)
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundColor(.gray)
+                                }
                                 
-                                Text(item.date)
-                                    .font(.system(size: 12, weight: .regular))
+                                Spacer()
+                                
+                                Text(item.serving)
+                                    .font(.system(size: 14, weight: .regular))
                                     .foregroundColor(.gray)
                             }
-                            
-                            Spacer()
-                            
-                            Text(item.serving)
-                                .font(.system(size: 14, weight: .regular))
-                                .foregroundColor(.gray)
+                            .padding(.top, 13)
+                            .cornerRadius(8)
                         }
-                        .padding(.top, 13)
-                        .cornerRadius(8)
                     }
                 }
                 
@@ -113,11 +124,10 @@ struct FoodDetailView: View {
                     }
                 }
             }
-          
         }
     }
 }
 
 #Preview {
-    FoodDetailView()
+    FoodDetailView(food: MockData.banana)
 }
