@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DailySummaryView: View {
     @State var reminingCalorieProgress: Double = 0.5
+    @State var showAddMealSheet = false
     
     var body: some View {
         NavigationView{
@@ -21,7 +22,6 @@ struct DailySummaryView: View {
                         .padding(4)
                         
                     }
-                    CircularProgressView(progress: reminingCalorieProgress)
                     
                 }
                 
@@ -30,12 +30,15 @@ struct DailySummaryView: View {
             .toolbar {
                 
                 Button {
-                    
+                    showAddMealSheet = true  
                 }
                 label: {
                     Image(systemName: "plus")
                         .tint(Color(.orange))
                 }
+            }
+            .sheet(isPresented: $showAddMealSheet) {
+                AddMealView(isPresented: $showAddMealSheet)
             }
             .navigationTitle(Text("Aujourd'hui"))
         }

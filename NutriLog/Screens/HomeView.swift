@@ -12,7 +12,7 @@ struct HomeView: View {
                     
                 }
             Spacer()
-            Spacer()
+            
             DailyChartsView()
                 .tabItem {
                     Image(systemName: "chart.bar")
