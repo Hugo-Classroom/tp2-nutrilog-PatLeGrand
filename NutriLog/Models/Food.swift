@@ -4,9 +4,6 @@ import SwiftData
 @Model
 class Food {
     var name: String
-    
-    // Macros pour 100 grammes de l'aliment
-    // Donc, si on prend un repas de 200g, il faut doubler ces valeurs.
     var calories: Double
     var protein: Double
     var carbs: Double
