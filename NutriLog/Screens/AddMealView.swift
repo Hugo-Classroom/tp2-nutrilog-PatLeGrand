@@ -1,83 +1,180 @@
 import SwiftUI
 
-
-
-struct ContentView: View {
-    @State var showSheet = true
+struct AddMealView: View {
+    @Binding var isPresented: Bool
+    
+    @State var selectedFood: Food? = nil
+    @State var servingSize: Double = 120
+    @State var selectedMealType: String = "Déjeuner"
+    
+    let mealTypes = ["Déjeuner", "Dîner", "Souper"]
+    let foods = MockData.foods
     
     var body: some View {
-        Button("Ajouter une entrée") {
-            showSheet = true
-        }
-        .sheet(isPresented: $showSheet) {
-            AddMealView(isPresented: $showSheet)
+        VStack(spacing: 0) {
+            
+            HStack {
+                Button(action: { isPresented = false }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 20))
+                        .foregroundColor(.black)
+                }
+                
+                Spacer()
+                
+                Text("Ajouter une entrée")
+                    .font(.system(size: 18, weight: .semibold))
+                
+                Spacer()
+                
+                Image(systemName: "xmark")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.clear)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    
+                    
+                    Picker("Aliment", selection: $selectedFood) {
+                        Text("Choisir un aliment").tag(nil as Food?)
+                        ForEach(foods, id: \.name) { food in
+                            Text(food.name).tag(Optional(food))
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    
+                    
+                    if selectedFood != nil {
+                        
+                        // MARK: - Portions section
+                        HStack {
+                            Text("Portions: \(Int(servingSize)) g")
+                                .font(.system(size: 14, weight: .regular))
+                            
+                            Spacer()
+                            
+                            HStack(spacing: 3) {
+                                Button(action: {
+                                    if servingSize > 10 {
+                                        servingSize -= 10
+                                    }
+                                }) {
+                                    Image(systemName: "minus")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.black)
+                                        .frame(width: 30, height: 30)
+                                        .background(Color(.systemGray5))
+                                        .padding(.horizontal, 4)
+                                }
+                                
+                                Divider()
+                                
+                                Button(action: {
+                                    if servingSize < 500 {
+                                        servingSize += 10
+                                    }
+                                }) {
+                                    Image(systemName: "plus")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.black)
+                                        .frame(width: 30, height: 30)
+                                        .background(Color(.systemGray5))
+                                        .padding(.horizontal, 4)
+                                }
+                            }
+                            .background(Color(.systemGray5))
+                            .cornerRadius(6)
+                        }
+                        .padding(.bottom, 8)
+                        
+                        
+                        HStack(spacing: 0) {
+                            ForEach(Array(mealTypes.enumerated()), id: \.offset) { index, mealType in
+                                Button(action: { selectedMealType = mealType }) {
+                                    Text(mealType)
+                                        .font(.system(size: 13, weight: .semibold))
+                                        .foregroundColor(.black)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                        .background(selectedMealType == mealType ? Color.white : Color(.systemGray5))
+                                        .cornerRadius(15)
+                                }
+                                
+                                if index < mealTypes.count - 1 {
+                                    Divider()
+                                        .frame(height: 24)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 1)
+                        .background(Color(.systemGray5))
+                        .cornerRadius(8)
+                        
+                        
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Macros pour \(Int(servingSize)) g")
+                                .font(.system(size: 14, weight: .semibold))
+                            
+                            HStack {
+                                Text("Calories:")
+                                    .font(.system(size: 13, weight: .regular))
+                                Spacer()
+                                Text(String(format: "%.1f kcal", (selectedFood?.calories ?? 0) * servingSize / 100))
+                                    .font(.system(size: 13, weight: .semibold))
+                            }
+                            
+                            HStack {
+                                Text("Protéines:")
+                                    .font(.system(size: 13, weight: .regular))
+                                Spacer()
+                                Text(String(format: "%.1f g", (selectedFood?.protein ?? 0) * servingSize / 100))
+                                    .font(.system(size: 13, weight: .semibold))
+                            }
+                            
+                            HStack {
+                                Text("Glucides:")
+                                    .font(.system(size: 13, weight: .regular))
+                                Spacer()
+                                Text(String(format: "%.1f g", (selectedFood?.carbs ?? 0) * servingSize / 100))
+                                    .font(.system(size: 13, weight: .semibold))
+                            }
+                            
+                            HStack {
+                                Text("Gras:")
+                                    .font(.system(size: 13, weight: .regular))
+                                Spacer()
+                                Text(String(format: "%.1f g", (selectedFood?.fat ?? 0) * servingSize / 100))
+                                    .font(.system(size: 13, weight: .semibold))
+                            }
+                        }
+                        .padding(12)
+                        .background(Color(.systemGray5))
+                        .cornerRadius(8)
+                    }
+                }
+                .padding(16)
+            }
+            
+            Button(action: {
+                isPresented = false
+            }) {
+                Text("Sauvegarder")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(selectedFood == nil ? Color.gray : Color.orange)
+                    .cornerRadius(8)
+            }
+            .disabled(selectedFood == nil)
+            .padding(16)
         }
     }
 }
 
-struct AddMealView: View {
-    @Binding var isPresented: Bool
-        
-        var body: some View {
-            NavigationStack {
-                VStack(spacing: 20) {
-                    Text("Chocolat noir (70%)")
-                        .font(.headline)
-                    
-                    HStack {
-                        Text("Portions: 120 g")
-                        Spacer()
-                        HStack(spacing: 10) {
-                            Button(action: {}) {
-                                Text("−")
-                            }
-                            Button(action: {}) {
-                                Text("+")
-                            }
-                        }
-                    }
-                    
-                    HStack(spacing: 20) {
-                        Button("Déjeuner") { }
-                        Button("Dîner") { }
-                        Button("Souper") { }
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Macros pour 120 g").font(.headline)
-                        Text("Calories: 717.6 kcal")
-                        Text("Protéines: 9.4 g")
-                        Text("Glucides: 55.2 g")
-                        Text("Gras: 50.4 g")
-                    }
-                    
-                    Spacer()
-                    
-                    Button("Sauvegarder") {
-                        isPresented = false
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                }
-                .padding()
-                .navigationTitle("Ajouter une entrée")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: { isPresented = false }) {
-                            Image(systemName: "xmark")
-                                .foregroundColor(.black)
-                        }
-                    }
-                }
-            }
-        }
-    }
-/*
- #Preview {
- AddMealView()
- }
- */
+#Preview {
+    AddMealView(isPresented: .constant(true))
+}
