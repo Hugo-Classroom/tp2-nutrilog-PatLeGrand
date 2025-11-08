@@ -15,7 +15,7 @@ struct MealSection: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Meal type header
+
             HStack {
                 Text(mealType.rawValue.uppercased())
                     .font(.system(size: 12, weight: .semibold))
@@ -65,7 +65,6 @@ struct MealSection: View {
                     .foregroundColor(.gray)
             }
             
-            // Food items
             VStack(spacing: 12) {
                 ForEach(entries, id: \.id) { entry in
                     FoodItemCard(
