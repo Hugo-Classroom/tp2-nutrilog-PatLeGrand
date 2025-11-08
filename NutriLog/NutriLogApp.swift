@@ -7,6 +7,6 @@ struct NutriLogApp: App {
         WindowGroup {
             RootView()
         }
-        .modelContainer(PersistenceController.shared.container)
+        .modelContainer(for: [Food.self, FoodEntry.self])
     }
 }
