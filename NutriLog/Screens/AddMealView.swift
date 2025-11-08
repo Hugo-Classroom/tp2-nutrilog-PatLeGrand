@@ -1,13 +1,14 @@
 import SwiftUI
+import SwiftData
 
 struct AddMealView: View {
+    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     
     @State var selectedFood: Food? = nil
     @State var servingSize: Double = 120
-    @State var selectedMealType: String = "Déjeuner"
+    @State var selectedMealType: MealType = .breakfast
     
-    let mealTypes = ["Déjeuner", "Dîner", "Souper"]
     let foods = MockData.foods
     
     var body: some View {
@@ -49,7 +50,6 @@ struct AddMealView: View {
                     
                     if selectedFood != nil {
                         
-                        // MARK: - Portions section
                         HStack {
                             Text("Portions: \(Int(servingSize)) g")
                                 .font(.system(size: 14, weight: .regular))
@@ -92,9 +92,9 @@ struct AddMealView: View {
                         
                         
                         HStack(spacing: 0) {
-                            ForEach(Array(mealTypes.enumerated()), id: \.offset) { index, mealType in
+                            ForEach(MealType.allCases) { mealType in
                                 Button(action: { selectedMealType = mealType }) {
-                                    Text(mealType)
+                                    Text(mealType.rawValue)
                                         .font(.system(size: 13, weight: .semibold))
                                         .foregroundColor(.black)
                                         .frame(maxWidth: .infinity)
@@ -103,7 +103,7 @@ struct AddMealView: View {
                                         .cornerRadius(15)
                                 }
                                 
-                                if index < mealTypes.count - 1 {
+                                if mealType != MealType.allCases.last {
                                     Divider()
                                         .frame(height: 24)
                                 }
@@ -159,7 +159,7 @@ struct AddMealView: View {
             }
             
             Button(action: {
-                isPresented = false
+                saveMeal()
             }) {
                 Text("Sauvegarder")
                     .font(.system(size: 16, weight: .semibold))
@@ -173,8 +173,35 @@ struct AddMealView: View {
             .padding(16)
         }
     }
+    
+
+    private func saveMeal() {
+        guard let selectedFood = selectedFood else { return }
+        
+
+        let newEntry = FoodEntry(
+            food: selectedFood,
+            servingSize: servingSize,
+            mealType: selectedMealType,
+            date: Date()
+        )
+        
+
+        modelContext.insert(newEntry)
+        
+
+        do {
+            try modelContext.save()
+            print("✅ Repas sauvegardé avec succès!")
+        } catch {
+            print("❌ Erreur lors de la sauvegarde: \(error)")
+        }
+        
+        isPresented = false
+    }
 }
 
 #Preview {
     AddMealView(isPresented: .constant(true))
+        .modelContainer(for: [Food.self, FoodEntry.self], inMemory: true)
 }
