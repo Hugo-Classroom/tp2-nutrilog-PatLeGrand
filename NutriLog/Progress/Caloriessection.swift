@@ -21,17 +21,19 @@ struct CaloriesSection: View {
             Text("CALORIES")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.gray)
+                .padding(.leading, 12)
             
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Restantes")
                         .font(.system(size: 15, weight: .regular))
-                        .foregroundColor(.gray)
+                        .foregroundColor(.black)
                     (
                         Text(String(format: "%.0f", remainingCalories))
                             .font(.system(size: 15, weight: .bold))
                         + Text(" cal")
                             .font(.system(size: 14, weight: .regular))
+                            .foregroundColor(.gray)
                     )
                 }
                 
@@ -51,17 +53,19 @@ struct CaloriesSection: View {
                 
                 
                 Divider()
+                    .padding(.horizontal, 9)
                     
                 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Consommées")
                         .font(.system(size: 15, weight: .regular))
-                        .foregroundColor(.gray)
+                        .foregroundColor(.black)
                     (
                         Text(String(format: "%.0f", totalCaloriesConsumed))
                             .font(.system(size: 14, weight: .bold))
                         + Text(" cal")
                             .font(.system(size: 14, weight: .regular))
+                            .foregroundColor(.gray)
                     )
                     
                 }
@@ -71,7 +75,7 @@ struct CaloriesSection: View {
             .padding(.leading, 12)
             .padding(.trailing, 12)
             .padding(.vertical, 4)
-            .background(Color(.systemGray6))
+            .background(Color(.white))
             .cornerRadius(10)
         }
         

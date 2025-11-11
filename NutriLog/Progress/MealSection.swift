@@ -65,7 +65,7 @@ struct MealSection: View {
                     .foregroundColor(.gray)
             }
             
-            VStack(spacing: 12) {
+            VStack(spacing: 0) {
                 ForEach(entries, id: \.id) { entry in
                     FoodItemCard(
                         food: entry.food,
@@ -73,6 +73,8 @@ struct MealSection: View {
                     )
                 }
             }
+            .background(Color(.white))
+            .cornerRadius(8)
         }
     }
 }

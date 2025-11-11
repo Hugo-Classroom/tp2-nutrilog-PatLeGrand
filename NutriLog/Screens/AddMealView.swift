@@ -40,11 +40,15 @@ struct AddMealView: View {
                     
                     
                     Picker("Aliment", selection: $selectedFood) {
-                        Text("Choisir un aliment").tag(nil as Food?)
+                        Text("Choisir un aliment")
+                            .tag(nil as Food?)
                         ForEach(foods, id: \.name) { food in
-                            Text(food.name).tag(Optional(food))
+                            Text(food.name)
+                                .tag(Optional(food))
                         }
                     }
+                    .tint(.orange)
+                    
                     .pickerStyle(.menu)
                     
                     
@@ -171,8 +175,11 @@ struct AddMealView: View {
             }
             .disabled(selectedFood == nil)
             .padding(16)
+            
         }
+        .background(Color(.systemGray6))
     }
+        
     
 
     private func saveMeal() {

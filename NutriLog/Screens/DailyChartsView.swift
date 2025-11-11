@@ -5,7 +5,6 @@ import Charts
 struct DailyChartsView: View {
     @Query(sort: \FoodEntry.date, order: .reverse) private var allEntries: [FoodEntry]
     
-    // Filtrer les entrées d'aujourd'hui
     var todayEntries: [FoodEntry] {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -15,7 +14,6 @@ struct DailyChartsView: View {
         }
     }
     
-    // Données pour le graphique des calories par repas
     var caloriesByMeal: [(mealType: String, calories: Double, color: Color)] {
         let grouped = Dictionary(grouping: todayEntries, by: { $0.mealType })
         
@@ -28,7 +26,6 @@ struct DailyChartsView: View {
         }
     }
     
-    // Données pour le graphique des macros totaux
     var macroData: [(name: String, value: Double, color: Color)] {
         let totalProtein = todayEntries.reduce(0) { $0 + $1.protein }
         let totalCarbs = todayEntries.reduce(0) { $0 + $1.carbs }
@@ -41,7 +38,6 @@ struct DailyChartsView: View {
         ]
     }
     
-    // Top 5 des aliments les plus consommés (par calories)
     var topFoods: [(name: String, calories: Double)] {
         let foodGroups = Dictionary(grouping: todayEntries) { $0.food?.name ?? "Inconnu" }
         
@@ -64,6 +60,9 @@ struct DailyChartsView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
+                    
+                    Text("Graphiques")
+                        .font(.system(size: 35, weight: .bold))
                     
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Calories par repas")
@@ -222,7 +221,8 @@ struct DailyChartsView: View {
                 }
                 .padding(16)
             }
-            .navigationTitle("Graphiques")
+            .background(Color(.systemGray6))
+
             .navigationBarTitleDisplayMode(.inline)
         }
     }

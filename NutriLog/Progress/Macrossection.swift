@@ -14,6 +14,7 @@ struct MacrosSection: View {
             Text("MACROS")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.gray)
+                .padding(.leading, 12)
             
             HStack(spacing: 35) {
                 
@@ -51,7 +52,7 @@ struct MacrosSection: View {
             .padding(.leading, 12)
             .padding(.trailing, 12)
             .padding(.vertical, 4)
-            .background(Color(.systemGray6))
+            .background(.white)
             .cornerRadius(10)
         }
     }

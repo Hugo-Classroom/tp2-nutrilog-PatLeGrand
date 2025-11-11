@@ -65,6 +65,9 @@ struct DailySummaryView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     
+                    Text("Aujourd'hui")
+                        .font(.system(size: 35, weight: .bold))
+                    
                     CaloriesSection(
                         totalCaloriesConsumed: totalCaloriesConsumed,
                         remainingCalories: remainingCalories,
@@ -94,7 +97,7 @@ struct DailySummaryView: View {
                 }
                 .padding(16)
             }
-            .navigationTitle("Aujourd'hui")
+            .background(Color(.systemGray6))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -108,7 +111,10 @@ struct DailySummaryView: View {
                 AddMealView(isPresented: $showAddMealSheet)
             }
         }
+        
+        
     }
+        
 }
 
 #Preview {

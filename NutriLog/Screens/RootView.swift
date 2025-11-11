@@ -4,12 +4,19 @@ struct RootView: View {
     @State private var isAuthenticated = false
     
     var body: some View {
-        if isAuthenticated {
-            HomeView()
-        } else {
-            LoginView(isAuthenticated: $isAuthenticated)
+        VStack(){
+            if isAuthenticated {
+                HomeView()
+            } else {
+                LoginView(isAuthenticated: $isAuthenticated)
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.loginBackground)
+        .ignoresSafeArea()
+            
     }
+    
 }
 
 

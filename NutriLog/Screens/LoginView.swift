@@ -2,11 +2,10 @@ import SwiftUI
 import LocalAuthentication
 
 struct LoginView: View {
-    @Binding var isAuthenticated: Bool   // 👈 vient maintenant de l’extérieur
+    @Binding var isAuthenticated: Bool
     
     var body: some View {
-        Color.loginBackground.ignoresSafeArea()
-            .overlay(
+        VStack{
                 VStack(spacing: 0) {
                     Image("nutrilog-logo")
                         .resizable()
@@ -22,7 +21,9 @@ struct LoginView: View {
                     .buttonBorderShape(.roundedRectangle(radius: 10))
                     .tint(.loginButton)
                 }
-            )
+            
+        }
+        
     }
     
     func authentificate() {
@@ -34,7 +35,7 @@ struct LoginView: View {
             
             context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
                                    localizedReason: reason) { success, authError in
-                // ⚠️ On revient potentiellement sur un thread en arrière-plan
+
                 DispatchQueue.main.async {
                     if let authError {
                         print("Erreur FaceID/TouchID: \(authError.localizedDescription)")
@@ -43,7 +44,7 @@ struct LoginView: View {
                     
                     if success {
                         print("Authentifié ✅")
-                        isAuthenticated = true   // 👈 met à jour RootView
+                        isAuthenticated = true
                     } else {
                         print("Échec de l'authentification ❌")
                     }
